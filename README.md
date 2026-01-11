@@ -13,6 +13,8 @@
 | `setup_vnc.sh` | **VNC 虚拟桌面** | 基于 TigerVNC，实现 5901 端口的图形化远程访问 |
 | `setup_hibernate.sh` | **休眠功能修复** | 检查 Swap 分区 UUID、配置 GRUB 与 initramfs、开启菜单选项 |
 | `setup_disable_wakeup.sh` | **防止休眠自动重启** | 禁用导致系统休眠后立即自动唤醒的 ACPI 设备 |
+| `setup_rime.sh` | **Rime 输入法** | 自动安装 Fcitx5-Rime、Lua 插件及个人 XSB+日语配置 |
+| `setup_dotfiles.sh` | **终端开发环境** | 一键克隆 Dotfiles，配置 Zsh (P10k) + Neovim (LazyVim) + Rust 工具链 |
 
 ---
 
@@ -37,6 +39,8 @@ chmod +x *.sh
 *   **系统初始化与常用软件：**
     ```bash
     ./setup_software.sh
+    ./setup_dotfiles.sh        # 配置极致的终端开发环境 (Zsh/Nvim)
+    ./setup_rime.sh            # 配置新声笔 XSB 与日语输入法
     ```
 *   **开启系统快照与防炸保护 (需 Btrfs 分区)：**
     ```bash
