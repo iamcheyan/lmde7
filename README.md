@@ -10,6 +10,7 @@
 | `setup_grub_btrfs.sh` | **Btrfs 容灾全家桶** | 集成 Timeshift + grub-btrfs + autosnap，实现 **Apt 更新前自动快照** |
 | `setup_ssh.sh` | **SSH 一键开启** | 自动安装、防火墙策略、显示连接 IP |
 | `setup_rdp.sh` | **RDP 远程桌面** | 自动配置 XRDP、解决 Cinnamon 桌面冲突、消除 Polkit 验证弹窗 |
+| `setup_vnc.sh` | **VNC 虚拟桌面** | 基于 TigerVNC，实现 5901 端口的图形化远程访问 |
 | `setup_hibernate.sh` | **休眠功能修复** | 检查 Swap 分区 UUID、配置 GRUB 与 initramfs、开启菜单选项 |
 
 ---
