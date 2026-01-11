@@ -12,6 +12,7 @@
 | `setup_rdp.sh` | **RDP 远程桌面** | 自动配置 XRDP、解决 Cinnamon 桌面冲突、消除 Polkit 验证弹窗 |
 | `setup_vnc.sh` | **VNC 虚拟桌面** | 基于 TigerVNC，实现 5901 端口的图形化远程访问 |
 | `setup_hibernate.sh` | **休眠功能修复** | 检查 Swap 分区 UUID、配置 GRUB 与 initramfs、开启菜单选项 |
+| `setup_disable_wakeup.sh` | **防止休眠自动重启** | 禁用导致系统休眠后立即自动唤醒的 ACPI 设备 |
 
 ---
 
@@ -43,7 +44,8 @@ chmod +x *.sh
     ```
 *   **配置休眠功能：**
     ```bash
-    ./setup_hibernate.sh
+    ./setup_hibernate.sh       # 配置基础休眠功能
+    ./setup_disable_wakeup.sh  # 解决休眠后自动重启问题
     ```
 *   **配置远程连接：**
     ```bash
