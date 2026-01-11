@@ -37,62 +37,65 @@ fi
 log_success "Found Btrfs root filesystem."
 
 # --- Step 2: Install Dependencies ---
-log_info "Step 2: Installing dependencies (git, make, inotify-tools)..."
+log_info "Step 2: Installing dependencies (timeshift, build-essential, git, make, etc.)..."
 apt-get update
-apt-get install -y git make inotify-tools gettext
+apt-get install -y timeshift build-essential git make inotify-tools gettext
 if [ $? -ne 0 ]; then
     log_error "Failed to install dependencies."
     exit 1
 fi
 
-# --- Step 3: Clone and Install ---
-log_info "Step 3: Cloning grub-btrfs from GitHub..."
+# --- Step 3: Clone and Install grub-btrfs ---
+log_info "Step 3: Installing grub-btrfs..."
 TEMP_DIR=$(mktemp -d)
-git clone https://github.com/Antynea/grub-btrfs.git "$TEMP_DIR"
-
-log_info "Installing grub-btrfs..."
-cd "$TEMP_DIR"
+git clone https://github.com/Antynea/grub-btrfs.git "$TEMP_DIR/grub-btrfs"
+cd "$TEMP_DIR/grub-btrfs"
 make install
-if [ $? -eq 0 ]; then
-    log_success "grub-btrfs installed successfully."
-else
-    log_error "Installation failed."
+if [ $? -ne 0 ]; then
+    log_error "grub-btrfs installation failed."
     exit 1
 fi
+log_success "grub-btrfs installed."
 
-# --- Step 4: Initial GRUB Update ---
-log_info "Step 4: Updating GRUB configuration..."
+# --- Step 4: Install timeshift-autosnap-apt ---
+log_info "Step 4: Installing timeshift-autosnap-apt..."
+log_info "This will automatically create a snapshot before any 'apt install/upgrade' command."
+git clone https://github.com/wmutschl/timeshift-autosnap-apt.git "$TEMP_DIR/timeshift-autosnap-apt"
+cd "$TEMP_DIR/timeshift-autosnap-apt"
+make install
+if [ $? -ne 0 ]; then
+    log_error "timeshift-autosnap-apt installation failed."
+    exit 1
+fi
+log_success "timeshift-autosnap-apt installed."
+
+# --- Step 5: Initial GRUB Update ---
+log_info "Step 5: Updating GRUB configuration..."
 update-grub
 log_success "GRUB menu updated."
 
-# --- Step 5: Enable Monitoring Daemon ---
-log_info "Step 5: Enabling grub-btrfsd service (auto-update on snapshot)..."
-
-# Configuration: Make sure it monitors Timeshift's location
-# Most Debian/LMDE systems use /run/timeshift/backup or /run/timeshift/btrfs
-# grub-btrfs usually detects this, but we'll ensure the service is happy.
-
+# --- Step 6: Enable Monitoring Daemon ---
+log_info "Step 6: Enabling grub-btrfsd service..."
 systemctl enable --now grub-btrfsd
 if systemctl is-active --quiet grub-btrfsd; then
-    log_success "Monitoring daemon is running."
+    log_success "Monitoring daemon (grub-btrfsd) is running."
 else
     log_warn "Daemon failed to start. You may need to run 'update-grub' manually after snapshots."
 fi
 
-# --- Step 6: Summary ---
+# --- Step 7: Summary ---
 echo ""
 echo -e "${GREEN}=============================================${NC}"
-echo -e "${GREEN}       grub-btrfs Setup Complete!            ${NC}"
+echo -e "${GREEN}       Btrfs Snapshot Stack Completed!       ${NC}"
 echo -e "${GREEN}=============================================${NC}"
 echo ""
-log_info "How to use:"
-echo "1. When Timeshift creates a snapshot (manual or scheduled),"
-echo "   the GRUB menu will be automatically updated."
-echo "2. On next boot, you will see a 'Linx Snapshots' submenu in GRUB."
-echo "3. Select a snapshot to boot into it in Read-Only mode."
+log_info "Features now active:"
+echo "1. [Auto-Snap] Anytime you run 'apt install', a snapshot is created automatically."
+echo "2. [Auto-Menu] grub-btrfsd will detect new snapshots and add them to GRUB."
+echo "3. [Boot-Menu] Restart to see 'Linux Snapshots' in your boot menu."
 echo ""
-echo -e "${YELLOW}Tip: To make a snapshot bootable/writable after booting into it,${NC}"
-echo -e "${YELLOW}     use Timeshift to 'Restore' that snapshot.${NC}"
+log_warn "Reminder: Ensure you have configured Timeshift (GUI) at least once"
+log_warn "to set up your Btrfs backup location!"
 echo ""
 
 # Cleanup
