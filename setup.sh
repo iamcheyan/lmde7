@@ -48,6 +48,7 @@ show_menu() {
     echo -e "  8) 开启 RDP 远程桌面 (xrdp)"
     echo -e "  9) 开启 VNC 虚拟桌面"
     echo ""
+    echo -e "  s) 查看当前服务状态 (Status Check)"
     echo -e "  a) 一键运行全套推荐配置 (1, 2, 3, 4)"
     echo -e "  q) 退出 (Quit)"
     echo ""
@@ -68,6 +69,7 @@ while true; do
         7) run_task "setup_ssh.sh" ;;
         8) run_task "setup_rdp.sh" ;;
         9) run_task "setup_vnc.sh" ;;
+        [sS]) run_task "check_status.sh" ;;
         [aA])
             echo -e "${YELLOW}>> 开始执行推荐初始化全家桶...${NC}"
             run_task "setup_software.sh"
